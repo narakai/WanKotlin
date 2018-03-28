@@ -1,20 +1,27 @@
 package www.clem.com.wankotlin.ui.activity
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import toast
 import www.clem.com.wankotlin.R
 import www.clem.com.wankotlin.base.BaseActivity
+import www.clem.com.wankotlin.ui.fragment.HomeFragment
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity() {
     private var lastTime: Long = 0
+    private var currentIndex = 0
+    private var homeFragment: HomeFragment? = null
+
+    //    lazy{} 只能用在val类型, lateinit 只能用在var类型
+    private val fragmentManager by lazy {
+        supportFragmentManager
+    }
 
     override fun setLayoutId(): Int = R.layout.activity_main
 
@@ -34,23 +41,31 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             setSupportActionBar(this)
         }
 
-//        fab.run {
-//            setOnClickListener { onFabClickListener }
-//        }
+        drawerLayout.run {
+            val toggle = ActionBarDrawerToggle(
+                    this@MainActivity,
+                    this,
+                    toolbar,
+                    R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close
+            )
+            addDrawerListener(toggle)
+            toggle.syncState()
+        }
 
-        val toggle = ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+        navigationView.run {
+            setNavigationItemSelectedListener(onDrawerNavigationItemSelectedListener)
+        }
 
-        navigationView.setNavigationItemSelectedListener(this)
-    }
-
-    private val onFabClickListener =
-            View.OnClickListener { view ->
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show()
+        fragmentManager.beginTransaction().apply {
+            homeFragment ?: let {
+                HomeFragment().let {
+                    homeFragment = it
+                    add(R.id.content, it)
+                }
             }
+        }.commit()
+    }
 
 
     /**
@@ -71,6 +86,41 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
+    private val onDrawerNavigationItemSelectedListener =
+            NavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.nav_camera -> {
+                        // Handle the camera action
+                    }
+                    R.id.nav_gallery -> {
+
+                    }
+                    R.id.nav_slideshow -> {
+
+                    }
+                    R.id.nav_manage -> {
+
+                    }
+                    R.id.nav_share -> {
+
+                    }
+                    R.id.nav_send -> {
+
+                    }
+                }
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        when (fragment) {
+            is HomeFragment -> homeFragment ?: let { homeFragment = fragment }
+//            is TypeFragment -> typeFragment ?: let { typeFragment = fragment }
+//            is CommonUseFragment -> commonUseFragment ?: let { commonUseFragment = fragment }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
@@ -85,32 +135,5 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.action_settings -> return true
             else -> return super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START)
-        return true
     }
 }
