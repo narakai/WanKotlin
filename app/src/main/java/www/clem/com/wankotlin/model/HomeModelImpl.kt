@@ -288,6 +288,7 @@ class HomeModelImpl : HomeModel, CollectArticleModel {
      * get banner
      * @param onBannerListener HomePresenter.OnBannerListener
      */
+//    当Model层数据加载成功之后会调用Presenter层的回调方法通知Presenter层数据加载完毕
     override fun getBanner(onBannerListener: HomePresenter.OnBannerListener) {
         async(UI) {
             tryCatch({

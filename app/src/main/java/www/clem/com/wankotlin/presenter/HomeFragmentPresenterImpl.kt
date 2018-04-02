@@ -9,11 +9,13 @@ import top.jowanxu.wanandroidclient.view.HomeFragmentView
 import www.clem.com.wankotlin.model.CollectArticleModel
 
 class HomeFragmentPresenterImpl(
+        //    Presenter中同时持有Viwe层以及Model层的Interface的引用
         private val homeFragmentView: HomeFragmentView,
         private val collectArticleView: CollectArticleView
 ) : HomePresenter.OnHomeListListener, HomePresenter.OnCollectArticleListener,
         HomePresenter.OnBannerListener {
 
+//    Presenter中同时持有Viwe层以及Model层的Interface的引用
     private val homeModel: HomeModel = HomeModelImpl()
     private val collectArticleModel: CollectArticleModel = HomeModelImpl()
     /**
@@ -89,6 +91,7 @@ class HomeFragmentPresenterImpl(
     /**
      * get banner
      */
+//    然后Presenter层会调用Model层请求数据
     override fun getBanner() {
         homeModel.getBanner(this)
     }
@@ -97,8 +100,10 @@ class HomeFragmentPresenterImpl(
      * get banner success
      * @param result BannerResponse
      */
+    //    最后Presenter层再调用View层的接口将加载后的数据展示给用户
     override fun getBannerSuccess(result: BannerResponse) {
         if (result.errorCode != 0) {
+            //通知到View的实现类HomeFragment
             homeFragmentView.getBannerFailed(result.errorMsg)
             return
         }

@@ -31,6 +31,14 @@ import www.clem.com.wankotlin.ui.view.HorizontalRecyclerView
 /**
  * Created by laileon on 2018/3/28.
  */
+
+//View与Model并不直接交互，而是使用Presenter作为View与Model之间的桥梁。
+//其中Presenter中同时持有View层以及Model层的Interface的引用，而View层持有Presenter层Interface的引用。
+//当View层某个界面需要展示某些数据的时候，首先会调用Presenter层的某个接口，然后Presenter层会调用Model层请求数据，
+//当Model层数据加载成功之后会调用Presenter层的回调方法通知Presenter层数据加载完毕，最后Presenter层再调用View层的接口将加载后的数据展示给用户。
+//这就是MVP模式的整个核心过程。
+
+//这里HomeFrafment其实就是View的Impl
 class HomeFragment : BaseFragment(), HomeFragmentView, CollectArticleView {
     companion object {
         private const val BANNER_TIME = 5000L
@@ -49,6 +57,8 @@ class HomeFragment : BaseFragment(), HomeFragmentView, CollectArticleView {
     /**
      * adapter
      */
+    //    lazy{} 只能用在val类型, lateinit 只能用在var类型
+    //    lateinit不能用在可空的属性上和java的基本类型上 例：用在view上
     private val homeAdapter: HomeAdapter by lazy {
         HomeAdapter(activity, datas)
     }
@@ -92,6 +102,7 @@ class HomeFragment : BaseFragment(), HomeFragmentView, CollectArticleView {
     /**
      * presenter
      */
+//    View层持有Presenter层Interface的引用, 这里HomeFrafment其实就是View的Impl
     private val homeFragmentPresenter: HomeFragmentPresenterImpl by lazy {
         HomeFragmentPresenterImpl(this, this)
     }
@@ -133,6 +144,7 @@ class HomeFragment : BaseFragment(), HomeFragmentView, CollectArticleView {
             addHeaderView(bannerRecyclerView)
             setEmptyView(R.layout.fragment_home_empty)
         }
+//        当View层某个界面需要展示某些数据的时候，首先会调用Presenter层的某个接口
         homeFragmentPresenter.getBanner()
         homeFragmentPresenter.getHomeList()
     }
