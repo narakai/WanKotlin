@@ -14,11 +14,13 @@ import toast
 import www.clem.com.wankotlin.R
 import www.clem.com.wankotlin.base.BaseActivity
 import www.clem.com.wankotlin.ui.fragment.HomeFragment
+import www.clem.com.wankotlin.ui.fragment.TypeFragment
 
 class MainActivity : BaseActivity() {
     private var lastTime: Long = 0
     private var currentIndex = 0
     private var homeFragment: HomeFragment? = null
+    private var typeFragment: TypeFragment? = null
 
     //    lazy{} 只能用在val类型, lateinit 只能用在var类型
     private val fragmentManager by lazy {
@@ -125,13 +127,13 @@ class MainActivity : BaseActivity() {
                         currentIndex = R.id.navigation_home
                         true
                     }
-//                    R.id.navigation_type -> {
-////                        if (currentIndex == R.id.navigation_type) {
-////                            typeFragment?.smoothScrollToPosition()
-////                        }
-////                        currentIndex = R.id.navigation_type
-//                        true
-//                    }
+                    R.id.navigation_type -> {
+                        if (currentIndex == R.id.navigation_type) {
+                            typeFragment?.smoothScrollToPosition()
+                        }
+                        currentIndex = R.id.navigation_type
+                        true
+                    }
                     else -> {
                         false
                     }
@@ -152,12 +154,12 @@ class MainActivity : BaseActivity() {
                     add(R.id.content, it)
                 }
             }
-//            typeFragment ?: let {
-//                TypeFragment().let {
-//                    typeFragment = it
-//                    add(R.id.content, it)
-//                }
-//            }
+            typeFragment ?: let {
+                TypeFragment().let {
+                    typeFragment = it
+                    add(R.id.content, it)
+                }
+            }
 //            commonUseFragment ?: let {
 //                CommonUseFragment().let {
 //                    commonUseFragment = it
@@ -172,12 +174,12 @@ class MainActivity : BaseActivity() {
                         this.show(it)
                     }
                 }
-//                R.id.navigation_type -> {
-//                    toolbar.title = getString(R.string.title_dashboard)
-//                    typeFragment?.let {
-//                        this.show(it)
-//                    }
-//                }
+                R.id.navigation_type -> {
+                    toolbar.title = getString(R.string.title_dashboard)
+                    typeFragment?.let {
+                        this.show(it)
+                    }
+                }
 //                R.id.menuHot -> {
 //                    toolbar.title = getString(R.string.hot_title)
 //                    commonUseFragment?.let {
@@ -195,9 +197,9 @@ class MainActivity : BaseActivity() {
         homeFragment?.let {
             transaction.hide(it)
         }
-//        typeFragment?.let {
-//            transaction.hide(it)
-//        }
+        typeFragment?.let {
+            transaction.hide(it)
+        }
 //        commonUseFragment?.let {
 //            transaction.hide(it)
 //        }
@@ -207,7 +209,7 @@ class MainActivity : BaseActivity() {
         super.onAttachFragment(fragment)
         when (fragment) {
             is HomeFragment -> homeFragment ?: let { homeFragment = fragment }
-//            is TypeFragment -> typeFragment ?: let { typeFragment = fragment }
+            is TypeFragment -> typeFragment ?: let { typeFragment = fragment }
 //            is CommonUseFragment -> commonUseFragment ?: let { commonUseFragment = fragment }
         }
     }
