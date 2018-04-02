@@ -1,8 +1,10 @@
 package www.clem.com.wankotlin.ui.activity
 
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
@@ -57,14 +59,11 @@ class MainActivity : BaseActivity() {
             setNavigationItemSelectedListener(onDrawerNavigationItemSelectedListener)
         }
 
-        fragmentManager.beginTransaction().apply {
-            homeFragment ?: let {
-                HomeFragment().let {
-                    homeFragment = it
-                    add(R.id.content, it)
-                }
-            }
-        }.commit()
+        bottomNavigation.run {
+            setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+            selectedItemId = R.id.navigation_home
+        }
+
     }
 
 
@@ -112,6 +111,98 @@ class MainActivity : BaseActivity() {
                 true
             }
 
+    /**
+     * NavigationItemSelect监听
+     */
+    private val onNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                setFragment(item.itemId)
+                return@OnNavigationItemSelectedListener when (item.itemId) {
+                    R.id.navigation_home -> {
+                        if (currentIndex == R.id.navigation_home) {
+                            homeFragment?.smoothScrollToPosition()
+                        }
+                        currentIndex = R.id.navigation_home
+                        true
+                    }
+//                    R.id.navigation_type -> {
+////                        if (currentIndex == R.id.navigation_type) {
+////                            typeFragment?.smoothScrollToPosition()
+////                        }
+////                        currentIndex = R.id.navigation_type
+//                        true
+//                    }
+                    else -> {
+                        false
+                    }
+                }
+            }
+
+    /**
+     * 显示对应Fragment
+     */
+    private fun setFragment(index: Int) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        fragmentManager.beginTransaction().apply {
+            homeFragment ?: let {
+                HomeFragment().let {
+                    homeFragment = it
+                    add(R.id.content, it)
+                }
+            }
+//            typeFragment ?: let {
+//                TypeFragment().let {
+//                    typeFragment = it
+//                    add(R.id.content, it)
+//                }
+//            }
+//            commonUseFragment ?: let {
+//                CommonUseFragment().let {
+//                    commonUseFragment = it
+//                    add(R.id.content, it)
+//                }
+//            }
+            hideFragment(this)
+            when (index) {
+                R.id.navigation_home -> {
+                    toolbar.title = getString(R.string.app_name)
+                    homeFragment?.let {
+                        this.show(it)
+                    }
+                }
+//                R.id.navigation_type -> {
+//                    toolbar.title = getString(R.string.title_dashboard)
+//                    typeFragment?.let {
+//                        this.show(it)
+//                    }
+//                }
+//                R.id.menuHot -> {
+//                    toolbar.title = getString(R.string.hot_title)
+//                    commonUseFragment?.let {
+//                        this.show(it)
+//                    }
+//                }
+            }
+        }.commit()
+    }
+
+    /**
+     * 隐藏所有fragment
+     */
+    private fun hideFragment(transaction: FragmentTransaction) {
+        homeFragment?.let {
+            transaction.hide(it)
+        }
+//        typeFragment?.let {
+//            transaction.hide(it)
+//        }
+//        commonUseFragment?.let {
+//            transaction.hide(it)
+//        }
+    }
+
     override fun onAttachFragment(fragment: Fragment) {
         super.onAttachFragment(fragment)
         when (fragment) {
@@ -124,7 +215,7 @@ class MainActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
-        return true
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

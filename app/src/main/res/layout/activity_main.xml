@@ -34,7 +34,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         tools:context="www.clem.com.wankotlin.ui.activity.MainActivity"
-        tools:openDrawer="start">
+        tools:openDrawer="end"
+        >
 
         <FrameLayout
             android:id="@+id/content"
@@ -52,13 +53,13 @@
             app:menu="@menu/activity_main_drawer"/>
     </android.support.v4.widget.DrawerLayout>
 
-    <!--<android.support.design.widget.BottomNavigationView-->
-    <!--android:id="@+id/bottomNavigation"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginEnd="0dp"-->
-    <!--android:layout_marginStart="0dp"-->
-    <!--android:background="?android:attr/windowBackground"-->
-    <!--app:menu="@menu/navigation" />-->
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/navigation"/>
 
 </LinearLayout>
